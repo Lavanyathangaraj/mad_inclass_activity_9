@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:audioplayers/audioplayers.dart'; // 👈 Add this line
 
 void main() {
   runApp(HalloweenStoryApp());
@@ -96,8 +97,8 @@ class SpookyPage extends StatefulWidget {
 class _SpookyPageState extends State<SpookyPage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final Random _random = Random();
-
   late List<_SpookyObject> _objects;
+  final AudioPlayer _audioPlayer = AudioPlayer(); // 👈 Audio player instance
 
   @override
   void initState() {
@@ -115,6 +116,15 @@ class _SpookyPageState extends State<SpookyPage> with SingleTickerProviderStateM
       _SpookyObject('assets/images/owl.png', 90),
       _SpookyObject('assets/images/ghost1.png', 120),
     ];
+
+    _playSpookySound(); // 👈 Start the sound
+  }
+
+  Future<void> _playSpookySound() async {
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop); // Loop the sound
+    await _audioPlayer.play(
+      AssetSource('sounds/scary_ambience.mp3'), // 👈 Your audio file path
+    );
   }
 
   Widget _buildSpookyObject(_SpookyObject obj, int index, Size size) {
@@ -185,6 +195,7 @@ class _SpookyPageState extends State<SpookyPage> with SingleTickerProviderStateM
   @override
   void dispose() {
     _controller.dispose();
+    _audioPlayer.dispose(); // 👈 Dispose the audio player
     super.dispose();
   }
 }
